@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Neo-brutalist palette — pure black / white / grey.
+       Because every neutral in this design is achromatic, the HSL hue/sat are 0
+       and only lightness varies. Values are kept as HSL triples so shadcn/ui
+       semantic variables keep working unmodified. */
+    --background: 0 0% 100%; /* #FFFFFF */
+    --foreground: 0 0% 0%; /* #000000 */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%; /* #000000 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 90%; /* #E5E5E5 */
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 90%; /* #E5E5E5 */
+    --muted-foreground: 0 0% 32%; /* #525252 */
+    --accent: 0 0% 100%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 0% 0%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 0%; /* #000000 */
+    --input: 0 0% 0%;
+    --ring: 0 0% 0%;
+    --radius: 0.25rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: auto; /* Lenis owns scrolling */
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'ss01', 'ss02';
+    overflow-x: clip;
+  }
+
+  /* Lenis recommended styles */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-4 ring-offset-0 ring-foreground;
+  }
+
+  ::selection {
+    @apply bg-foreground text-background;
+  }
+
+  /* Scrollbar — thick, square, monochrome. */
+  ::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #ffffff;
+    border-left: 2px solid #000000;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #000000;
+    border: 3px solid #ffffff;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #808080;
+  }
+}
+
+@layer components {
+  /* ---- Typography primitives ---------------------------------------- */
+  .brutal-display {
+    @apply font-display uppercase tracking-[-0.04em] leading-[0.85];
+    text-wrap: balance;
+  }
+
+  .brutal-kicker {
+    @apply font-mono text-[11px] sm:text-xs font-bold uppercase tracking-[0.22em];
+  }
+
+  .brutal-rule {
+    @apply h-[3px] w-full bg-foreground;
+  }
+
+  /* ---- Interaction primitives ---------------------------------------- */
+  .brutal-shadow {
+    @apply shadow-brutal transition-transform duration-150 ease-out;
+  }
+  .brutal-shadow:hover {
+    @apply -translate-x-[2px] -translate-y-[2px] shadow-brutal-lg;
+  }
+  .brutal-shadow:active {
+    @apply translate-x-[1px] translate-y-[1px] shadow-none;
+  }
+
+  .brutal-grid-bg {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.09) 1px, transparent 1px);
+    background-size: 34px 34px;
+  }
+
+  .brutal-dots-bg {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.22) 1.2px, transparent 1.2px);
+    background-size: 18px 18px;
+  }
+
+  .brutal-halftone {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.5) 1px, transparent 1px);
+    background-size: 7px 7px;
+  }
+
+  /* Diagonal hatch used behind "inverted" (black) sections. */
+  .brutal-hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.14) 0px,
+      rgba(255, 255, 255, 0.14) 2px,
+      transparent 2px,
+      transparent 10px
+    );
+  }
+
+  /* Checkerboard used as the image fallback so a missing banner still reads
+     as an intentional graphic rather than a broken asset. */
+  .brutal-checker {
+    background-image: linear-gradient(45deg, #e5e5e5 25%, transparent 25%),
+      linear-gradient(-45deg, #e5e5e5 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #e5e5e5 75%),
+      linear-gradient(-45deg, transparent 75%, #e5e5e5 75%);
+    background-size: 22px 22px;
+    background-position: 0 0, 0 11px, 11px -11px, -11px 0px;
+  }
+
+  /* ---- Scroll reveal ------------------------------------------------- */
+  /* The wrapper starts black; Motion scrubs the mask/clip so the section
+     "develops" out of the dark. See <RevealFromBlack />. */
+  .reveal-from-black {
+    position: relative;
+    isolation: isolate;
+    background-color: #000000;
+  }
+
+  .reveal-from-black > .reveal-inner {
+    will-change: transform, opacity;
+  }
+
+  /* ---- Misc ---------------------------------------------------------- */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .skeleton-brutal {
+    @apply relative overflow-hidden bg-ash;
+  }
+  .skeleton-brutal::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+  }
+}
+
+@layer utilities {
+  .border-t-3 {
+    border-top-width: 3px;
+  }
+  .border-b-3 {
+    border-bottom-width: 3px;
+  }
+  .border-l-3 {
+    border-left-width: 3px;
+  }
+  .border-r-3 {
+    border-right-width: 3px;
+  }
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+  }
+}
+
+/* Users who ask for reduced motion get a static, fully legible page.
+   The Lenis hook and every Motion component also read this preference at
+   runtime, but this is the CSS-level guarantee. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-from-black {
+    background-color: transparent !important;
+  }
+  .reveal-from-black > .reveal-inner {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Sonner (toasts) restyled to match the brutalist system. */
+[data-sonner-toaster] {
+  --normal-bg: #ffffff !important;
+  --normal-border: 3px solid #000000 !important;
+  --normal-shadow: 4px 4px 0 0 #000000 !important;
+}
+[data-sonner-toast] {
+  border-radius: 4px !important;
+  font-family: Archivo, ui-sans-serif, system-ui, sans-serif !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+}
